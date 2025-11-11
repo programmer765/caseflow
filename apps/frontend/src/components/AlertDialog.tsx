@@ -31,8 +31,8 @@ export default function AlertDialogUI({
         <AlertDialogDescription>{description}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel className="text-black">{cancelText}</AlertDialogCancel>
-        <AlertDialogAction onClick={onConfirm}>{confirmText}</AlertDialogAction>
+        <AlertDialogCancel className="bg-[#1e1e1e] cursor-pointer border-[#1e1e1e] hover:bg-[#272727] hover:text-white">{cancelText}</AlertDialogCancel>
+        <AlertDialogAction className="text-black cursor-pointer bg-gray-200 hover:bg-white/80" onClick={onConfirm}>{confirmText}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   );
