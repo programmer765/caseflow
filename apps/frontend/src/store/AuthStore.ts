@@ -10,7 +10,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      isAuthenticated: false, // for testing purposes, set to true by default
+      isAuthenticated: true, // for testing purposes, set to true by default
       token: null,
       login: (token: string) =>
         set(() => ({ isAuthenticated: true, token })),
