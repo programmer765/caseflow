@@ -7,7 +7,7 @@ import AlertDialogUI from "./AlertDialog";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function CSVUpload() {
 
@@ -15,6 +15,7 @@ export default function CSVUpload() {
   const router = useRouter()
   const [btnText, setBtnText] = useState<string>("Upload CSV");
   const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,10 +28,21 @@ export default function CSVUpload() {
     e.target.value = ""; // Reset the input value to allow re-uploading the same file if needed
   };
 
-  const handleRemoveBtnClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleRemoveBtnClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setBtnText("Upload CSV");
     setIsFileSelected(false);
+  };
+
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === "text/csv") {
+      setBtnText(file.name);
+      setIsFileSelected(true);
+      console.log("File dropped:", file.name);
+    }
   };
 
   return (
@@ -42,23 +54,37 @@ export default function CSVUpload() {
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <div 
-              // onDragOver={}
-              className="width-[300px] border-2 border-dotted border-gray-300 flex flex-col px-15 py-8 justify-center items-center bg-inherit rounded-md mt-6 cursor-default">
+              onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={(e: React.DragEvent<HTMLDivElement>) => {
+                e.preventDefault();
+                setIsDragging(false);
+              }}
+              onDrop={handleFileDrop}
+              className={cn("width-[300px] bg-[#232323] border-2 border-dotted border-gray-500 flex flex-col px-15 py-8 justify-center items-center rounded-md mt-6 cursor-default hover:border-gray-400 transition-all duration-200", isDragging ? "border-blue-400 bg-[#2a2a2a]" : "")}>
               <span className="font-semibold text-xl text-white">Drag and drop your csv file here</span>
               <span className="font-medium text-gray-400 mt-3">or</span>
               <label 
-                className={cn("group mt-4 flex items-center text-white px-4 py-2 rounded transition-all duration-200", (isFileSelected ? "bg-green-900 cursor-default" : "bg-[#272727] hover:bg-[#3a3a3a] cursor-pointer"))}
+                className={cn("group mt-4 flex items-center text-white px-3 py-2 rounded transition-all duration-200", (isFileSelected ? "bg-green-900 cursor-default pr-2" : "bg-[#141414] hover:bg-[#1b1b1b] cursor-pointer"))}
                 >
                 {
                   isFileSelected ?
                   (
                     <div className="flex items-center">
-                      < Sheet className="mr-2 text-green-400" />
-                      { btnText }
-                      <X 
-                        className="ml-2 p-0.5 cursor-pointer border rounded-[0.30rem] border-green-900 bg-red-900 hover:bg-red-800 hover:border-red-800 hover:font-semibold transition-all delay-75" 
-                        onClick={handleRemoveBtnClick}
-                      />
+                      <div className="mr-2 text-green-400">
+                        <Sheet />
+                      </div>
+                      <div className="mr-2">
+                        { btnText }
+                      </div>
+                      <Button
+                          className="ml-2 p-0.5 cursor-pointer border rounded-[0.30rem] border-green-900 bg-red-900 hover:bg-red-800 hover:border-red-800 hover:font-semibold transition-all delay-75" 
+                          onClick={() => handleRemoveBtnClick}
+                        >
+                        <X />
+                      </Button>
                     </div>
                   )
                   :
