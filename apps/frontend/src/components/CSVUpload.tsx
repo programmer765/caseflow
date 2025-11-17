@@ -35,46 +35,50 @@ export default function CSVUpload() {
 
   return (
     <div className="h-[90%] bg-inherit p-4 flex flex-col justify-center items-center">
-      <span className="text-center text-white text-2xl font-semibold">
+      <span className="text-center text-white text-3xl font-semibold">
         Upload your CSV file to get started
       </span>
       <div>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <div className="width-[300px] border-2 border-dotted flex px-12 justify-center bg-gray-500">
-            <label 
-              className={cn("group mt-6 flex items-center text-white px-4 py-2 rounded transition-all duration-200", (isFileSelected ? "bg-green-900 cursor-default" : "bg-[#272727] hover:bg-[#3a3a3a] cursor-pointer"))}
-              >
-              {
-                isFileSelected ?
-                (
-                  <div className="flex items-center">
-                    < Sheet className="mr-2 text-green-400" />
-                    { btnText }
-                    <X 
-                      className="ml-2 p-0.5 cursor-pointer border rounded-[0.30rem] border-green-900 bg-red-900 hover:bg-red-800 hover:border-red-800 hover:font-semibold transition-all delay-75" 
-                      onClick={handleRemoveBtnClick}
-                    />
-                  </div>
-                )
-                :
-                (
-                  <div className="flex items-center">
-                    <Plus className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                    { btnText }
-                  </div>
-                )
-              }
-              {
-                isAuthenticated === true && 
-                <input 
-                  type="file" 
-                  accept=".csv" 
-                  className="hidden" 
-                  onChange={handleFileUpload} 
-                />
-              }
-            </label>
+            <div 
+              // onDragOver={}
+              className="width-[300px] border-2 border-dotted border-gray-300 flex flex-col px-15 py-8 justify-center items-center bg-inherit rounded-md mt-6 cursor-default">
+              <span className="font-semibold text-xl text-white">Drag and drop your csv file here</span>
+              <span className="font-medium text-gray-400 mt-3">or</span>
+              <label 
+                className={cn("group mt-4 flex items-center text-white px-4 py-2 rounded transition-all duration-200", (isFileSelected ? "bg-green-900 cursor-default" : "bg-[#272727] hover:bg-[#3a3a3a] cursor-pointer"))}
+                >
+                {
+                  isFileSelected ?
+                  (
+                    <div className="flex items-center">
+                      < Sheet className="mr-2 text-green-400" />
+                      { btnText }
+                      <X 
+                        className="ml-2 p-0.5 cursor-pointer border rounded-[0.30rem] border-green-900 bg-red-900 hover:bg-red-800 hover:border-red-800 hover:font-semibold transition-all delay-75" 
+                        onClick={handleRemoveBtnClick}
+                      />
+                    </div>
+                  )
+                  :
+                  (
+                    <div className="flex items-center">
+                      <Plus className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                      { btnText }
+                    </div>
+                  )
+                }
+                {
+                  isAuthenticated === true && 
+                  <input 
+                    type="file" 
+                    accept=".csv" 
+                    className="hidden" 
+                    onChange={handleFileUpload} 
+                  />
+                }
+              </label>
             </div>
           </AlertDialogTrigger>
           {
