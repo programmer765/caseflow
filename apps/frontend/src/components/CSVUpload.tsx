@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import Papa from "papaparse";
 
 export default function CSVUpload() {
 
@@ -18,15 +19,21 @@ export default function CSVUpload() {
   const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [spinner, setSpinner] = useState<boolean>(false);
+  const [csvFile, setCSVFile] = useState<File | null>(null);
+
+  const uploadFile = (file: File) => {
+    setBtnText(file.name);
+    setIsFileSelected(true);
+    setCSVFile(file);
+    console.log("File dropped:", file.name);
+  }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Handle the file upload logic here
-      setBtnText(file.name);
-      setIsFileSelected(true);
-      console.log("File uploaded:", file.name);
-    }
+    if (!file || file.type !== "text/csv") return;
+    setBtnText(file.name);
+    setIsFileSelected(true);
+    // console.log("File uploaded:", file.name);
     e.target.value = ""; // Reset the input value to allow re-uploading the same file if needed
   };
 
@@ -40,17 +47,25 @@ export default function CSVUpload() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type === "text/csv") {
-      setBtnText(file.name);
-      setIsFileSelected(true);
-      console.log("File dropped:", file.name);
-    }
+    if (!file || file.type !== "text/csv") return;
+    uploadFile(file);
   };
 
   const openFile = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setSpinner(true);
-
+    if (!csvFile) return;
+    Papa.parse(csvFile, {
+      header: true,
+      complete: (results) => {
+        console.log("File parsed:", typeof results.data);
+        setSpinner(false);
+      },
+      error: (error) => {
+        console.log(error);
+        setSpinner(false);
+      },
+    })
   }
 
   return (
