@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import Papa from "papaparse";
+import { useCSVFileDataStore } from "@/store/CSVFileDataStore";
 
 export default function CSVUpload() {
 
@@ -55,17 +56,21 @@ export default function CSVUpload() {
     e.preventDefault();
     setSpinner(true);
     if (!csvFile) return;
-    Papa.parse(csvFile, {
-      header: true,
-      complete: (results) => {
-        console.log("File parsed:", typeof results.data);
-        setSpinner(false);
-      },
-      error: (error) => {
-        console.log(error);
-        setSpinner(false);
-      },
-    })
+    setTimeout(() => {
+      Papa.parse(csvFile, {
+        header: true,
+        complete: (results) => {
+          // console.log("File parsed:", typeof results.data);
+          console.log("File parsed:", results.data);
+          setSpinner(false);
+          useCSVFileDataStore((state) => state.setData(results.data));
+        },
+        error: (error) => {
+          console.log(error);
+          setSpinner(false);
+        },
+      })
+    }, 1000)
   }
 
   return (
