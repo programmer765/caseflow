@@ -21,6 +21,7 @@ export default function CSVUpload() {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [spinner, setSpinner] = useState<boolean>(false);
   const [csvFile, setCSVFile] = useState<File | null>(null);
+  const setCSVFileData = useCSVFileDataStore((state) => state.setData);
 
   const uploadFile = (file: File) => {
     setBtnText(file.name);
@@ -63,14 +64,14 @@ export default function CSVUpload() {
           // console.log("File parsed:", typeof results.data);
           console.log("File parsed:", results.data);
           setSpinner(false);
-          useCSVFileDataStore((state) => state.setData(results.data));
+          setCSVFileData(results.data);
         },
         error: (error) => {
           console.log(error);
           setSpinner(false);
         },
       })
-    }, 1000)
+    }, 500)
   }
 
   return (
