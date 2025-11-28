@@ -29,7 +29,7 @@ export default function CSFileOpener() {
           {data.map((row, i) => (
             <tr key={i}>
               {columns.map((col) => (
-                <td key={col} className="border px-3 py-2">
+                <td key={col} className="border text-white px-3 py-2">
                   {String(row[col] ?? "")}
                 </td>
               ))}
