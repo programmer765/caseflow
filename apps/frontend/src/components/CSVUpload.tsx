@@ -23,6 +23,14 @@ export default function CSVUpload() {
   const [csvFile, setCSVFile] = useState<File | null>(null);
   const setCSVFileData = useCSVFileDataStore((state) => state.setData);
 
+  const isValidFile = (file: File | null): boolean => {
+    if (!file || file.type !== 'text/csv') {
+      alert("Please upload a valid CSV file.");
+      return false;
+    }
+    return true;
+  }
+
   const uploadFile = (file: File) => {
     setBtnText(file.name);
     setIsFileSelected(true);
@@ -32,10 +40,10 @@ export default function CSVUpload() {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || file.type !== "text/csv") return;
+    console.log(file);
+    if (!file || !isValidFile(file)) return;
     setBtnText(file.name);
     setIsFileSelected(true);
-    // console.log("File uploaded:", file.name);
     e.target.value = ""; // Reset the input value to allow re-uploading the same file if needed
   };
 
@@ -49,7 +57,7 @@ export default function CSVUpload() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (!file || file.type !== "text/csv") return;
+    if (!file || !isValidFile(file)) return;
     uploadFile(file);
   };
 
@@ -61,7 +69,6 @@ export default function CSVUpload() {
       Papa.parse(csvFile, {
         header: true,
         complete: (results) => {
-          // console.log("File parsed:", typeof results.data);
           console.log("File parsed:", results.data);
           setSpinner(false);
           setCSVFileData(results.data);

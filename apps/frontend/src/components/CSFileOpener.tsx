@@ -5,7 +5,11 @@ import { useCSVFileDataStore } from "@/store/CSVFileDataStore";
 
 export default function CSFileOpener() {
 
-  const data = useCSVFileDataStore((state) => state.data);
+  const rawData = useCSVFileDataStore((state) => state.data);
+  const data = rawData.map((row, i) => {
+    const rowNo = { "No.": i + 1 }
+    return { ...rowNo, ...row };
+  })
   const columns = Object.keys(data[0]);
 
 
@@ -17,7 +21,7 @@ export default function CSFileOpener() {
             {columns.map((col) => (
               <th
                 key={col}
-                className="border px-3 py-2 bg-gray-100 text-left font-medium"
+                className="border border-black px-3 py-2 bg-gray-100 text-left font-medium hover:cursor-default"
               >
                 {col}
               </th>
