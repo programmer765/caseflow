@@ -35,15 +35,12 @@ export default function CSVUpload() {
     setBtnText(file.name);
     setIsFileSelected(true);
     setCSVFile(file);
-    console.log("File dropped:", file.name);
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (!file || !isValidFile(file)) return;
-    setBtnText(file.name);
-    setIsFileSelected(true);
+    uploadFile(file);
     e.target.value = ""; // Reset the input value to allow re-uploading the same file if needed
   };
 
@@ -69,7 +66,6 @@ export default function CSVUpload() {
       Papa.parse(csvFile, {
         header: true,
         complete: (results) => {
-          console.log("File parsed:", results.data);
           setSpinner(false);
           setCSVFileData(results.data);
         },
