@@ -1,21 +1,45 @@
 "use client"
 
+import { cn } from "@/lib/utils";
 import { useCSVFileDataStore } from "@/store/CSVFileDataStore";
+import { useMemo, useState } from "react";
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+import { AgGridReact } from "ag-grid-react";
+// import "ag-grid-community/styles/ag-grid.css";
+// import "ag-grid-community/styles/ag-theme-alpine.css";
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 
 export default function CSFileOpener() {
 
   const rawData = useCSVFileDataStore((state) => state.data);
   const data = rawData.map((row, i) => {
-    const rowNo = { "No.": i + 1 }
+    const rowNo = { "No.": "1" }
     return { ...rowNo, ...row };
   })
-  const columns = Object.keys(data[0]);
 
+  const [rowData, setRowData] = useState<typeof data>(data);
+  const columnDefs = useMemo(() => {
+    if (!data || data.length === 0) return []
+    return Object.keys(data[0]).map((col) => ({
+      field: col,
+      headerName: col,
+      filter: true,
+      sortable: true,
+      resizable: true,
+    }))
+  }, [data])
+
+  const defaultColDef = {
+    sortable: true,
+    resizable: true,
+    filter: true,
+  }
 
   return (
-    <div className="overflow-auto border rounded mt-4">
-      <table className="w-full border-collapse">
+    <div className="h-full w-full">
+      {/* <table className="w-full border-collapse">
         <thead>
           <tr>
             {columns.map((col) => (
@@ -33,14 +57,21 @@ export default function CSFileOpener() {
           {data.map((row, i) => (
             <tr key={i}>
               {columns.map((col) => (
-                <td key={col} className="border text-white px-3 py-2">
+                <td key={col} className={cn("border text-white px-3 py-2", col !== "No." && "hover:cursor-cell hover:bg-[#2b2a2a]")}>
                   {String(row[col] ?? "")}
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        enableCellTextSelection={true}
+        rowDragManaged={true}
+      />
     </div>
   )
 }
