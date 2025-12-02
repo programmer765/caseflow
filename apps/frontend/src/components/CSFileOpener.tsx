@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 // import "ag-grid-community/styles/ag-grid.css";
-// import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -15,7 +15,7 @@ export default function CSFileOpener() {
 
   const rawData = useCSVFileDataStore((state) => state.data);
   const data = rawData.map((row, i) => {
-    const rowNo = { "No.": "1" }
+    const rowNo = { "No": i + 1 }
     return { ...rowNo, ...row };
   })
 
@@ -38,7 +38,7 @@ export default function CSFileOpener() {
   }
 
   return (
-    <div className="h-full w-full">
+    <div className="ag-theme-alpine h-full w-full">
       {/* <table className="w-full border-collapse">
         <thead>
           <tr>
